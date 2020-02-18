@@ -25,8 +25,9 @@ protocol Swipeable {
 
 extension SwipeTableViewCell: Swipeable {}
 extension SwipeCollectionViewCell: Swipeable {}
+extension SwipeTableNodeCell: Swipeable {}
 
-enum SwipeState: Int {
+public enum SwipeState: Int {
     case center = 0
     case left
     case right

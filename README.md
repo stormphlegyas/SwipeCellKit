@@ -8,13 +8,13 @@
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Twitter](https://img.shields.io/badge/twitter-@mkurabi-blue.svg?style=flat)](https://twitter.com/mkurabi)
 
-*Swipeable UITableViewCell/UICollectionViewCell based on the stock Mail.app, implemented in Swift.*
+*Swipeable UITableViewCell/UICollectionViewCell/ASCellNode based on the stock Mail.app, implemented in Swift.*
 
 <p align="center"><img src="https://raw.githubusercontent.com/jerkoch/SwipeCellKit/develop/Screenshots/Hero.gif" /></p>
 
 ## About
 
-A swipeable `UITableViewCell` or `UICollectionViewCell` with support for:
+A swipeable `UITableViewCell`, `UICollectionViewCell` or `ASCellNode` with support for:
 
 * Left and right swipe actions
 * Action buttons with: *text only, text + image, image only*
@@ -23,7 +23,7 @@ A swipeable `UITableViewCell` or `UICollectionViewCell` with support for:
 * Customizable action button behavior during swipe
 * Animated expansion when dragging past threshold
 * Customizable expansion animations
-* Support for both `UITableView` and `UICollectionView`
+* Support for `ASCellNode`,  `UITableView` and `UICollectionView`
 * Accessibility
 * Dark Mode
 
@@ -192,6 +192,45 @@ Optionally, you can implement the `editActionsOptionsForItemAt` method to custom
 
 ````swift    
 func collectionView(_ collectionView: UICollectionView, editActionsOptionsForItemAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
+    var options = SwipeOptions()
+    options.expansionStyle = .destructive
+    options.transitionStyle = .border
+    return options
+}
+````
+## Usage for ASCellNode
+
+Set the `delegate` property on `SwipeTableNodeCell`:
+
+````swift
+func tableNode(_ tableNode: ASTableNode, nodeForRowAt indexPath: IndexPath) -> ASCellNode {
+    let cell = SwipeTableNodeCell()
+    cell.delegate = self
+    return cell
+}
+````
+
+Adopt the `SwipeScrollViewCellDelegate` protocol:
+
+````swift
+func scrollView(_ scrollView: UIScrollView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]?{
+    guard orientation == .right else { return nil }
+
+    let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+        // handle action by updating model with deletion
+    }
+
+    // customize the action appearance
+    deleteAction.image = UIImage(named: "delete")
+
+    return [deleteAction]
+}
+````
+
+Optionally, you can implement the `editActionsOptionsForRowAt` method to customize the behavior of the swipe actions:
+
+````swift    
+func scrollView(_ scrollView: UIScrollView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
     var options = SwipeOptions()
     options.expansionStyle = .destructive
     options.transitionStyle = .border
