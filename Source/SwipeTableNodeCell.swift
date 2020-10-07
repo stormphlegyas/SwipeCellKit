@@ -143,7 +143,7 @@ open class SwipeTableNodeCell: ASCellNode {
     }
     
     func contains(point: CGPoint) -> Bool {
-        return point.y > frame.minY && point.y < frame.maxY
+        return point.y >= frame.minY && point.y <= frame.maxY
     }
     
     /// :nodoc:
